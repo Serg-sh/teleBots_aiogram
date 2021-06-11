@@ -7,8 +7,8 @@ services:
     restart: always
     ports:
       - 5432:5432
-    environment:
-      POSTGRES_PASSWORD: 123456
+    env_file:
+      - ".env"
 
 
   adminer:
@@ -16,4 +16,15 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+
+  tgbot:
+    container_name: bot
+    build:
+      context: .
+    command: python app.py
+    restart: always
+
+    env_file:
+      - ".env"
 
