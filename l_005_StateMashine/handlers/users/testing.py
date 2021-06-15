@@ -2,14 +2,14 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Command
 
-from src.teleBot.aiogram._005_StateMashine.config import admin_id
-from src.teleBot.aiogram._005_StateMashine.loader import dp, bot
-from src.teleBot.aiogram._005_StateMashine.states.tests import Test
-
+from l_005_StateMashine.config import admin_id
+from l_005_StateMashine.loader import bot, dp
+from l_005_StateMashine.states.tests import Test
 
 
 async def send_to_admin(dp):
     await bot.send_message(chat_id=admin_id, text='Бот запущен')
+
 
 @dp.message_handler(Command('test'), state=None)
 async def enter_test(message: types.Message):
@@ -20,6 +20,8 @@ async def enter_test(message: types.Message):
                          "просто смотрите в потолок)?")
 
     await Test.Q1.set()
+
+
 #     OR
 #     await Test.first()
 
@@ -34,6 +36,7 @@ async def answer_q1(message: types.Message, state: FSMContext):
 
     await Test.Q2.set()
 
+
 @dp.message_handler(state=Test.Q2)
 async def answer_q1(message: types.Message, state: FSMContext):
     answer2 = message.text
@@ -41,7 +44,4 @@ async def answer_q1(message: types.Message, state: FSMContext):
     answer1 = data.get('answer1')
     await message.answer(f'Спасибо за Ваши ответы.\n '
                          f'Ответ на первый вопрос - {answer1} \n'
-                         f'Ответ на второй вопрос - {answer2}' )
-
-
-
+                         f'Ответ на второй вопрос - {answer2}')

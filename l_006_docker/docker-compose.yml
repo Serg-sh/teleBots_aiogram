@@ -3,6 +3,7 @@ version: '3.1'
 services:
 
   db:
+    container_name: database
     image: postgres
     restart: always
     ports:
@@ -12,6 +13,7 @@ services:
 
 
   adminer:
+    container_name: adminer
     image: adminer
     restart: always
     ports:
@@ -24,7 +26,7 @@ services:
       context: .
     command: python app.py
     restart: always
+    network_mode: "host"
 
     env_file:
       - ".env"
-
