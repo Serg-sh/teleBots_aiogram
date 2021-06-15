@@ -22,12 +22,10 @@ services:
 
   tgbot:
     container_name: bot
-    build: .
-    volumes:
-      - .:/src
+    build:
+      context: .
     command: python app.py
     restart: always
-    network_mode: "host"
 
     env_file:
       - ".env"
