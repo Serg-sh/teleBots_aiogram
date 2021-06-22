@@ -91,3 +91,47 @@ async def confirm(call: types.CallbackQuery, state: FSMContext):
     await item.create()
     await call.message.answer(_('Товар удачно создан'))
     await state.reset_state()
+
+
+@dp.message_handler(user_id=admin_id, commands=['tell_everyone'])
+async def mailing(message: types.Message):
+    await message.answer_photo(_('Пришли текст рассылки'))
+    await Mailing.Text.set()
+
+
+@dp.message_handler(user_id=admin_id, state=Mailing.Text)
+async def enter_text(message: types.Message, state: FSMContext):
+    text = message.text
+    await state.update_data(text=text)
+    markup = types.InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                [types.InlineKeyboardButton(text='Українська', callback_data='uk')],
+                [types.InlineKeyboardButton(text='Русский', callback_data='ru')],
+                [types.InlineKeyboardButton(text='English', callback_data='eu')]
+            ]
+        ]
+
+    )
+    await message.answer(_('На каком языке разослать это сообщение?\n\n'
+                           'Текст:\n'
+                           '{text}').format(text=text), reply_markup=markup)
+    await Mailing.Languarge.set()
+
+
+@dp.callback_query_handlers(user_id=admin_id, state=Mailing.Languarge)
+async def enter_lang(call: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    text = data.get('text')
+    await state.reset_state()
+    await call.message.edit_reply_markup()
+    users = await User.query.where(User.language == call.data).gino.all()
+    for user in users:
+        try:
+            await bot.send_message(chat_id=user.user_id, text=text)
+            await sleep(0.3)
+        except Exception:
+            pass
+    await call.message.answer(_('Рассылка выполнена.'))
+
+
