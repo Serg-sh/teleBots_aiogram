@@ -26,8 +26,7 @@ async def enter_name(message: types.Message, state: FSMContext):
     item.name = name
     await message.answer(_('Название: {name}'
                            '\nПришлите мне фотографию товара (не документ) или нажмите /cancel').format(
-        name=name
-    ))
+        name=name))
     await NewItem.Photo.set()
     await state.update_data(item=item)
 
@@ -42,8 +41,7 @@ async def add_photo(message: types.Message, state: FSMContext):
         photo=photo,
         caption=_('Название: {name}'
                   '\nПришлите цену товара в копейках или нажмите /cancel').format(
-            name=item.name
-        )
+            name=item.name)
     )
     await NewItem.Price.set()
     await state.update_data(item=item)
@@ -63,27 +61,27 @@ async def enter_price(message: types.Message, state: FSMContext):
     markup = types.InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                [types.InlineKeyboardButton(text=_('Да'), callback_data='confirm ')],
-                [types.InlineKeyboardButton(text=_('Ввести заново'), callback_data='change')]
+                (types.InlineKeyboardButton(text=_('Да'), callback_data='confirm ')),
+                (types.InlineKeyboardButton(text=_('Ввести заново'), callback_data='change'))
             ],
             [types.InlineKeyboardButton(text=_('Отменить'), callback_data='cancel')]
         ]
 
     )
-    await message.answer(_('Цена: {price:,}\nПодтверждаете?'),
-                         reply_markup=markup)
+    await message.answer(_('Цена: {price:,}\nПодтверждаете? Нажмите /cancel чтобы отменить.').format(
+        price=price), reply_markup=markup)
     await NewItem.Confirm.set()
     await state.update_data(item=item)
 
 
-@dp.callback_query_handlers(user_id=admin_id, text_contains='change', stat=NewItem.Confirm)
+@dp.callback_query_handler(user_id=admin_id, text_contains='change', state=NewItem.Confirm)
 async def change_price(call: types.CallbackQuery):
     await call.message.edit_reply_markup()
     await call.message.answer(_('Введите заново цену товара в копейках.'))
     await NewItem.Price.set()
 
 
-@dp.callback_query_handlers(user_id=admin_id, text_contains='confirm', stat=NewItem.Confirm)
+@dp.callback_query_handler(user_id=admin_id, text_contains='confirm', state=NewItem.Confirm)
 async def confirm(call: types.CallbackQuery, state: FSMContext):
     await call.message.edit_reply_markup()
     data = await state.get_data()
@@ -111,7 +109,6 @@ async def enter_text(message: types.Message, state: FSMContext):
                 [types.InlineKeyboardButton(text='English', callback_data='eu')]
             ]
         ]
-
     )
     await message.answer(_('На каком языке разослать это сообщение?\n\n'
                            'Текст:\n'
@@ -119,7 +116,7 @@ async def enter_text(message: types.Message, state: FSMContext):
     await Mailing.Languarge.set()
 
 
-@dp.callback_query_handlers(user_id=admin_id, state=Mailing.Languarge)
+@dp.callback_query_handler(user_id=admin_id, state=Mailing.Languarge)
 async def enter_lang(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     text = data.get('text')
@@ -133,5 +130,3 @@ async def enter_lang(call: types.CallbackQuery, state: FSMContext):
         except Exception:
             pass
     await call.message.answer(_('Рассылка выполнена.'))
-
-

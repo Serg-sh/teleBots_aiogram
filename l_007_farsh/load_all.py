@@ -19,5 +19,5 @@ dp = Dispatcher(bot, storage=storage)
 
 i18n = setup_middleware(dp)
 
-_ = i18n.dettext
+_ = i18n.gettext
 
