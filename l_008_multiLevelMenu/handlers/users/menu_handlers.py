@@ -17,10 +17,11 @@ async def show_menu(message: types.Message):
 async def list_categories(message: Union[types.Message, types.CallbackQuery], **kwargs):
     markup = await categories_keyboard()
     if isinstance(message, types.Message):
-        await message.answer('Смотри, что у нас есть!',reply_markup=markup)
+        await message.answer('Смотри, что у нас есть!', reply_markup=markup)
     elif isinstance(message, types.CallbackQuery):
         call = message
         await call.message.edit_reply_markup(markup)
+
 
 async def list_subcategories(callback: types.CallbackQuery, category, **kwargs):
     markup = await subcategories_keyboard(category)

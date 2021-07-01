@@ -10,6 +10,7 @@ async def add_item(**kwargs):
     new_item = await Item(**kwargs).create()
     return new_item
 
+
 async def get_categories() -> List[Item]:
     return await Item.query.distinct(Item.category_code).gino.all()
 
@@ -18,7 +19,7 @@ async def get_subcategories(category) -> List[Item]:
     return await Item.query.distinct(Item.subcategory_code).where(Item.category_code == category).gino.all()
 
 
-async def count_items(category_code, subcategory_code = None):
+async def count_items(category_code, subcategory_code=None):
     conditions = [Item.category_code == category_code]
 
     if subcategory_code:
@@ -37,7 +38,7 @@ async def get_items(category_code, subcategory_code) -> List[Item]:
     ).gino.all()
     return item
 
+
 async def get_item(item_id) -> Item:
     item = await Item.query.where(Item.id == item_id).gino.first()
     return item
-
