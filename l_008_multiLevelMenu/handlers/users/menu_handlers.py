@@ -39,7 +39,8 @@ async def show_item(callback: types.CallbackQuery, category, subcategory, item_i
     markup = item_keyboard(category, subcategory, item_id)
 
     item = await get_item(item_id)
-    text = f'Купи {item.name}'
+    text = f'Купи {item.name}\n' \
+           f'Цена: {item.price} usd'
     await callback.message.edit_text(text=text, reply_markup=markup)
 
 
