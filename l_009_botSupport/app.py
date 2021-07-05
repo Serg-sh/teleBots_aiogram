@@ -1,17 +1,14 @@
 from aiogram import executor
 
-from utils.misc.set_bot_commands import set_default_commands
-from loader import dp
+from l_009_botSupport.loader import dp
 import middlewares, filters, handlers
+from utils.misc.set_bot_commands import set_default_commands
 from utils.notify_admins import on_startup_notify
 
 
-
 async def on_startup(dispatcher):
-    # Устанавливаем дефолтные команды
-    await set_default_commands(dp)
-
     # Уведомляет про запуск
+    await set_default_commands(dispatcher)
     await on_startup_notify(dispatcher)
 
 

@@ -2,8 +2,8 @@ from aiogram import Dispatcher
 
 
 # from .is_admin import AdminFilter
-from ..loader import dp
+from l_009_botSupport.loader import dp
 
-if __name__ == "filters":
+# if __name__ == "filters":
     # dp.filters_factory.bind(is_admin)
-    pass
+    # pass
